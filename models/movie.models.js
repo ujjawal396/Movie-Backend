@@ -43,8 +43,8 @@ releaseStatus:{
 
 },{timestamps:true});
 
-const movie=mongoose.model("movies",movieSchema);
+const Movie=mongoose.model("Movie",movieSchema);
 
 export default{
-    movie,
+    Movie,
 }
