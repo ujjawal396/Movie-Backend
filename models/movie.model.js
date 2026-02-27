@@ -4,11 +4,14 @@ const movieSchema=new mongoose.Schema({
 
 name:{
     type:String,
-    required:true
+    required: true,
+        minLength: 2,
 },
+
 description:{
     type:String,
-    required:true
+    required:true,
+    minLength: 5,
 },
 casts:{
     type:[String],
@@ -45,7 +48,5 @@ releaseStatus:{
 
 const Movie=mongoose.model("Movie",movieSchema);
 
-// export default{
-//     //Movie,
-// }
+
 module.exports = Movie; // returning the model
