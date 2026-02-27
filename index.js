@@ -5,13 +5,15 @@ const { default: mongoose } = require("mongoose");
 
 env.config();
 
+
 app.use(express.json({limit: "16kb"})) // we use this so that we can parse json data 
 app.use(express.urlencoded({extended: true, limit: "16kb"}))//parese data from url
 const DB_NAME=process.env.DB_NAME;
 
 
 
-
+const MovieRoutes = require('./routes/movie.routes');
+//MovieRoutes(app); // invoking movie routes
 
 app.get('/',(req,res)=>{
     

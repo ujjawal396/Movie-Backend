@@ -43,8 +43,9 @@ releaseStatus:{
 
 },{timestamps:true});
 
-const movie=mongoose.model("movies",movieSchema);
+const Movie=mongoose.model("Movie",movieSchema);
 
-export default{
-    movie,
-}
+// export default{
+//     //Movie,
+// }
+module.exports = Movie; // returning the model
