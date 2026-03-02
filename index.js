@@ -12,8 +12,10 @@ const DB_NAME=process.env.DB_NAME;
 
 
 
-const MovieRoutes = require('./routes/movie.routes');
-//MovieRoutes(app); // invoking movie routes
+const MovieRoutes = require('./routes/movie.routes.js');
+const theatreRoutes = require('./routes/theatre.routes.js');
+MovieRoutes(app); // invoking movie routes
+theatreRoutes(app); // involing theatre routes
 
 app.get('/',(req,res)=>{
     
