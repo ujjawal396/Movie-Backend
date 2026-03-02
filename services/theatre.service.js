@@ -1,3 +1,4 @@
+const { get } = require('mongoose');
 const Theatre = require('../models/theatre.model');
 
 const createTheatre = async (data) => {
@@ -33,7 +34,25 @@ const deleteTheatre = async (id) => {
     }
 }
 
+const getTheatre = async (id) => {
+    try {
+        const response = await Theatre.findById(id);
+        if(!response) {
+            // no record found for the given id
+            return {
+                err: "No theatre found for the given id",
+                code: 404
+            }
+        }
+        return response;
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
 module.exports = {
     createTheatre,
     deleteTheatre,
+    getTheatre,
 }
