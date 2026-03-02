@@ -21,6 +21,16 @@ const routes=(app)=>{
         theatreController.getTheatres
     );
 
+    app.patch(
+        '/mba/api/v1/theatres/:id',
+        theatreController.update
+    );
+
+    app.put(
+        '/mba/api/v1/theatres/:id',
+        theatreController.update
+    );
+
 
 
 
