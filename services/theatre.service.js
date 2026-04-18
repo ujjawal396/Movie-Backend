@@ -1,5 +1,6 @@
 const { mongoose } = require('mongoose');
 const Theatre = require('../models/theatre.model');
+const Movie = require('../models/movie.model');
 
 const createTheatre = async (data) => {
     try {
@@ -68,6 +69,11 @@ const getAllTheatres = async (data) => {
             // this checks whether name is present in query params or not 
             query.name = data.name;
         }
+
+        if(data && data.movieId) {
+            query.movies = {$all: data.movieId};
+        }
+
         if(data && data.limit) {
             pagination.limit = data.limit;
         }
@@ -76,7 +82,7 @@ const getAllTheatres = async (data) => {
             let perPage = (data.limit) ? data.limit : 3;
             pagination.skip = data.skip*perPage;
         }
-        const response = await Theatre.find(query, {}, pagination);
+       const response = await Theatre.find(query, {}, pagination); // {pincode: 110031, movies: {$all: movie}}
         
         return response;
     } catch (error) {
