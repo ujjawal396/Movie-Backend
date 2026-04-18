@@ -16,7 +16,11 @@ const theatreSchema=new mongoose.Schema({
         type: Number,
         required: true
     },
-    address: String
+     address: String,
+    movies: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Movie'
+    }
 
 
 
