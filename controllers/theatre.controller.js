@@ -2,6 +2,7 @@ const Theatre= require('../models/theatre.model.js');
 
 const theatreService = require('../services/theatre.service.js');
 const { successResponseBody, errorResponseBody} = require('../utils/responsebody');
+const { STATUS } = require('../utils/constants');
 
 const create = async (req, res) => {
     try {
@@ -13,10 +14,14 @@ const create = async (req, res) => {
         }
         successResponseBody.data = response;
         successResponseBody.message = "Successfully created the theatre"
-        return res.status(201).json(successResponseBody);
+       return res.status(STATUS.CREATED).json(successResponseBody);
     } catch (error) {
+        if(error.err) {
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
         errorResponseBody.err = error;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
