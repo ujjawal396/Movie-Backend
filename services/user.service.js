@@ -1,5 +1,5 @@
 const User = require('../models/user.model');
-const { USER_ROLE, USER_STATUS} = require('../utils/constants');
+const { USER_ROLE, USER_STATUS, STATUS} = require('../utils/constants');
 
 const createUser = async (data) => {
     try {
@@ -7,7 +7,7 @@ const createUser = async (data) => {
             if(data.userStatus && data.userStatus != USER_STATUS.approved) {
                 throw {
                     err: "We cannot set any other status for customer", 
-                    code: 400
+                    code:  STATUS.NOT_FOUND
                 };
             }
         }
@@ -23,7 +23,7 @@ const createUser = async (data) => {
             Object.keys(error.errors).forEach((key) => {
                 err[key] = error.errors[key].message;
             });
-            throw {err: err, code: 422};
+            throw {err: err, code: STATUS.BAD_REQUEST};
         }
         
         throw error;
