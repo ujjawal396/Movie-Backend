@@ -28,11 +28,15 @@ const routes=(app)=>{
 
     app.patch(
         '/mba/api/v1/theatres/:id',
+         authMiddleware.isAuthenticated,
+        authMiddleware.isAdminOrClient,
         theatreController.update
     );
 
     app.put(
         '/mba/api/v1/theatres/:id',
+         authMiddleware.isAuthenticated,
+        authMiddleware.isAdminOrClient,
         theatreController.update
     );
 
