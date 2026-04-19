@@ -28,7 +28,8 @@ theatreId: {
         required: true,
     },
     totalCost: {
-        type: Number
+        type: Number,
+        required: true,
     },
     status: {
         type: String,
