@@ -37,9 +37,9 @@ const deleteMovie = async (id) => {
 const getMoviById = async (id) => {
     const movie = await Movie.findById(id);
     if(!movie) {
-        return {
+        throw {
             err: "No movie found for the corresponding id provided",
-            code: 404
+            code: STATUS.NOT_FOUND
         }
     };
     return movie;
@@ -71,9 +71,9 @@ const fetchMovies = async (filter) => {
     }
     let movies = await Movie.find(query);
     if(!movies) {
-        return {
+       throw {
             err: 'Not able to find the queries movies',
-            code: 404
+           code: STATUS.NOT_FOUND
         }
     }
     return movies;
