@@ -18,10 +18,12 @@ const MovieRoutes = require('./routes/movie.routes.js');
 const theatreRoutes = require('./routes/theatre.routes.js');
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
+const bookingRoutes = require('./routes/booking.routes');
 MovieRoutes(app); // invoking movie routes
 theatreRoutes(app); // involing theatre routes
 authRoutes(app); // invoking auth routes
 userRoutes(app); // invoking user routes
+bookingRoutes(app); // invoking booking routes
 
 
 app.get('/',(req,res)=>{
