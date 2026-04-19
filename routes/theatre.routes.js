@@ -11,7 +11,9 @@ const routes=(app)=>{
         theatreController.create);
 
         app.delete(
-        '/mba/api/v1/theatres/:id',authMiddleware.isAuthenticated,
+        '/mba/api/v1/theatres/:id',
+        authMiddleware.isAdminOrClient,
+        authMiddleware.isAuthenticated,
         theatreController.destroy
     );
 
