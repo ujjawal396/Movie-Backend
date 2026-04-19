@@ -35,7 +35,7 @@ theatreId: {
         type: String,
         required: true,
         enum: {
-            values: [BOOKING_STATUS.processing, BOOKING_STATUS.cancelled, BOOKING_STATUS.successfull],
+             values: [BOOKING_STATUS.processing, BOOKING_STATUS.cancelled, BOOKING_STATUS.successfull, BOOKING_STATUS.expired],
             message: "Invalid booking status"
         },
         default: BOOKING_STATUS.processing
