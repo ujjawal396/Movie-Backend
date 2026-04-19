@@ -42,6 +42,6 @@ theatreId: {
 }, {timestamps: true});
 
 
-const Booking=new mongooose.model("Booking",bookingSchema);
+const Booking= mongooose.model("Booking",bookingSchema);
 
 module.exports = Booking;
