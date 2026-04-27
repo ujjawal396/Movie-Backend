@@ -42,10 +42,11 @@ const userSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 userSchema.pre('save', async function (next) {
+    if (!this.isModified("password")) return;
     // a trigger to encrypt the plain password before saving the user
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
-    next();
+   
 });
 
 userSchema.methods.isValidPassword = async function (plainPassword) {

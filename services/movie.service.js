@@ -70,7 +70,7 @@ const fetchMovies = async (filter) => {
         query.name = filter.name;
     }
     let movies = await Movie.find(query);
-    if(!movies) {
+    if(movies.length===0) {
        throw {
             err: 'Not able to find the queries movies',
            code: STATUS.NOT_FOUND

@@ -5,10 +5,12 @@ const jwt = require('jsonwebtoken');
 const signup = async (req, res) => {
     try {
         const response = await userService.createUser(req.body);
+        
         successResponseBody.data = response;
         successResponseBody.message = "Successfully registered a user";
         return res.status(201).json(successResponseBody);
     } catch (error) {
+        console.log("SIGNUP ERROR:", error);
           if(error.err) {
             errorResponseBody.err = error.err;
             return res.status(error.code).json(errorResponseBody);
