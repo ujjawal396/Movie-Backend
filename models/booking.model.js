@@ -1,8 +1,8 @@
-const mongooose=require('mongoose');
+const mongoose=require('mongoose');
 
 const { BOOKING_STATUS } = require('../utils/constants');
 
-const bookingSchema =new mongooose.Schema({
+const bookingSchema =new mongoose.Schema({
 
 theatreId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +43,6 @@ theatreId: {
 }, {timestamps: true});
 
 
-const Booking= mongooose.model("Booking",bookingSchema);
+const Booking= mongoose.model("Booking",bookingSchema);
 
 module.exports = Booking;

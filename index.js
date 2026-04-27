@@ -9,7 +9,7 @@ env.config();
 app.use(express.json({limit: "16kb"})) // we use this so that we can parse json data 
 app.use(express.urlencoded({extended: true, limit: "16kb"}))//parese data from url
 const DB_NAME=process.env.DB_NAME;
-mongoose.set('debug', true);
+//mongoose.set('debug', true);
 
 
 
@@ -38,6 +38,8 @@ app.listen(process.env.PORT, async()=>{
     console.log(`server started running at : ${process.env.PORT}`);
 
     try{
+
+        //console.log(process.env.DB_URL)
 
         await mongoose.connect(process.env.DB_URL,{
         dbName: DB_NAME,   // 🔑 dynamic DB name

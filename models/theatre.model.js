@@ -31,7 +31,7 @@ const theatreSchema=new mongoose.Schema({
 const Theatre=mongoose.model("Theatre",theatreSchema);
 
 module.exports={
-    theatre,
+    Theatre,
 
 }
 
