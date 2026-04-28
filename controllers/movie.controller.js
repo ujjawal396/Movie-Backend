@@ -78,6 +78,7 @@ const updateMovie = async (req, res) => {
         const response = await movieService.updateMovie(req.params.id, req.body);
         
         successResponseBody.data = response;
+        successResponseBody.message="successfully updated the movie"
         return res.status(STATUS.OK).json(successResponseBody);
     } catch (error) {
         if(error.err) {

@@ -1,4 +1,5 @@
 const Movie = require('../models/movie.model');
+const { STATUS } = require('../utils/constants');
 
 const createMovie = async (data) => {
     try {
