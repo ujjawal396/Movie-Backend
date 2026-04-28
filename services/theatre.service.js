@@ -1,5 +1,5 @@
 const { mongoose } = require('mongoose');
-const Theatre = require('../models/theatre.model');
+const {Theatre} = require('../models/theatre.model');
 const Movie = require('../models/movie.model');
 const { STATUS } = require('../utils/constants');
 
@@ -7,7 +7,7 @@ const createTheatre = async (data) => {
     try {
         const response = await Theatre.create(data);
         return response;
-    } catch (err) {
+    } catch (error) {
          if(error.name == 'ValidationError') {
             let err = {};
             Object.keys(error.errors).forEach((key) => {
