@@ -11,14 +11,20 @@ const showSchema = new mongoose.Schema({
         required: true,
         ref: 'Movie',
     },
-    timing: {
-        type: String,
-        required: true
+   timing: {
+    type: Date,
+    required: true
+   },
+    
+    totalSeats: {
+    type: Number,
+    required: true
     },
-    noOfSeats: {
-        type: Number,
-        required: true
-    },
+
+    bookedSeats: {
+    type: Number,
+    default: 0
+   },
     price: {
         type: Number,
         required: true

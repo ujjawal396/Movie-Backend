@@ -2,11 +2,7 @@ const Show = require('../models/show.model');
 const Theatre = require('../models/theatre.model');
 const { STATUS } = require('../utils/constants');
 
-/**
- * 
- * @param data -> object containing details of the show to be created
- * @returns -> object with the new show details
- */
+
 const createShow = async (data) => {
     try {
         const theatre = await Theatre.findById(data.theatreId);
@@ -23,6 +19,7 @@ const createShow = async (data) => {
             }
         }
         const response = await Show.create(data);
+        
         return response;
     } catch (error) {
         if(error.name == 'ValidationError') {
@@ -49,7 +46,7 @@ const getShows = async (data) => {
             filter.movieId = data.movieId;
         }
         const response = await Show.find(filter);
-        if(!response) {
+        if(response.length===0) {
             throw {
                 err: 'No shows found',
                 code: STATUS.NOT_FOUND
@@ -79,17 +76,31 @@ const deleteShow = async (id) => {
 
 const updateShow = async (id, data) => {
     try {
-        const response = await Show.findByIdAndUpdate(id, data, {
-            new: true,
-            runValidators: true
-        });
+        
+        const response = await Show.findByIdAndUpdate(id);
         if(!response) {
             throw {
                 err: 'No show found for the given id',
                 code: STATUS.NOT_FOUND
             }
         }
-        return response;
+
+
+         if (data.totalSeats !== undefined && data.totalSeats < current.bookedSeats) {
+      throw {
+        err: 'totalSeats cannot be less than already booked seats',
+        code: STATUS.BAD_REQUEST
+      };
+    }
+
+    const updated = await Show.findByIdAndUpdate(
+      id,
+      data,
+      { new: true, runValidators: true }
+    );
+
+    return updated;
+        
     } catch (error) {
         if(error.name == 'ValidationError') {
             let err = {};

@@ -1,6 +1,7 @@
 const showService = require('../services/show.service');
 const { successResponseBody, errorResponseBody } = require('../utils/responsebody');
 const { STATUS } = require('../utils/constants');
+
 const create = async (req, res) => {
     try {
         const response = await showService.createShow(req.body);
@@ -13,7 +14,7 @@ const create = async (req, res) => {
             return res.status(error.code).json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(STATUS.OK).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
@@ -29,7 +30,7 @@ const getShows = async (req, res) => {
             return res.status(error.code).json(errorResponseBody);
         }
         errorResponseBody.err = error;
-        return res.status(STATUS.INTERNAL_SERVER_ERROR);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 

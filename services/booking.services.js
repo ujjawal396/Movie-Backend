@@ -4,29 +4,47 @@ const Show = require('../models/show.model');
 
 const createBooking = async (data) => {
     try {
-         const show = await Show.findOne({
-            movieId: data.movieId, 
-            theatreId: data.theatreId, 
-            timing: data.timing
-        });
-        console.log(show.price, data.noOfSeats);
-        data.totalCost = data.noOfSeats*show.price;
-        const response = await Booking.create(data);
+        // 1. Fetch show using showId
+        const show = await Show.findById(data.showId);
+
+        if (!show) {
+            throw {
+                err: "Show not found",
+                code: STATUS.NOT_FOUND
+            };
+        }
+
+        // 2. Check seat availability
+        if (show.bookedSeats + data.noOfSeats > show.noOfSeats) {
+            throw {
+                err: "Not enough seats available",
+                code: STATUS.BAD_REQUEST
+            };
+        }
+
+        // 3. Calculate total cost
+        data.totalCost = data.noOfSeats * show.price;
+
+        // 4. Update booked seats
+        show.bookedSeats += data.noOfSeats;
         await show.save();
+
+        // 5. Create booking
+        const response = await Booking.create(data);
+
         return response;
+
     } catch (error) {
-        console.log(error);
-        if(error.name == 'ValidationError') {
+        if (error.name === 'ValidationError') {
             let err = {};
             Object.keys(error.errors).forEach(key => {
                 err[key] = error.errors[key].message;
             });
-            throw {err: err, code: STATUS.UNPROCESSABLE_ENTITY};
+            throw { err: err, code: STATUS.UNPROCESSABLE_ENTITY };
         }
         throw error;
     }
-}
-
+};
 const updateBooking = async (data, bookingId) => {
     try {
         const response = await Booking.findByIdAndUpdate(bookingId, data, {

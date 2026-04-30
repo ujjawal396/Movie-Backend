@@ -1,9 +1,6 @@
 const { errorResponseBody } = require('../utils/responsebody');
 
-/**
- * 
- * 
- */
+
 const validateTheatreCreateRequest = async (req, res, next) => {
     // validate the presence of name
     if(!req.body.name) {

@@ -1,7 +1,11 @@
 const { STATUS } = require('../utils/constants');
 const { errorResponseBody } = require('../utils/responsebody');
 const ObjectId = require('mongoose').Types.ObjectId;
-
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+dayjs.extend(utc);
+dayjs.extend(timezone);
 const validateCreateShowRequest = async (req, res, next) => {
     // validate theatre id
     if(!req.body.theatreId) {
@@ -26,8 +30,21 @@ const validateCreateShowRequest = async (req, res, next) => {
         errorResponseBody.err = "No timing provided";
         return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
     }
+     const IST = 'Asia/Kolkata';
+
+     const parsed = dayjs.tz(req.body.timing, IST);
+    if (!parsed.isValid()) {
+      errorResponseBody.err = "Invalid timing format. Use 'YYYY-MM-DD HH:mm'";
+      return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
+    }
+
+    // overwrite with UTC ISO (or Date)
+    req.body.timing = parsed.utc().toDate();  // stored as UTC Date
+
+
+
     // validate noofseats presence
-    if(!req.body.noOfSeats) {
+    if(!req.body.totalSeats) {
         errorResponseBody.err = "No seat info provided";
         return res.status(STATUS.BAD_REQUEST).json(errorResponseBody);
     }
