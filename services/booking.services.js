@@ -4,35 +4,47 @@ const Show = require('../models/show.model');
 
 const createBooking = async (data) => {
     try {
-        // 1. Fetch show using showId
-        const show = await Show.findById(data.showId);
+        const seats = data.noOfSeats;
 
+        // 🔥 Atomic check + update
+        const show = await Show.findOneAndUpdate(
+            {
+                _id: data.showId,
+                $expr: {
+                    $lte: [
+                        { $add: ["$bookedSeats", seats] },
+                        "$totalSeats"
+                    ]
+                }
+            },
+            {
+                $inc: { bookedSeats: seats }
+            },
+            {
+                new: true
+            }
+        );
+
+        // ❗ If null → no seats available
         if (!show) {
             throw {
-                err: "Show not found",
-                code: STATUS.NOT_FOUND
-            };
-        }
-
-        // 2. Check seat availability
-        if (show.bookedSeats + data.noOfSeats > show.noOfSeats) {
-            throw {
                 err: "Not enough seats available",
-                code: STATUS.BAD_REQUEST
+                code: 400
             };
         }
 
-        // 3. Calculate total cost
-        data.totalCost = data.noOfSeats * show.price;
+        // 💰 Calculate total cost
+        data.totalCost = seats * show.price;
 
-        // 4. Update booked seats
-        show.bookedSeats += data.noOfSeats;
-        await show.save();
+        // 🧾 Create booking
+        const booking = await Booking.create({
+            showId: data.showId,
+            userId: data.userId,
+            noOfSeats: seats,
+            totalCost: data.totalCost
+        });
 
-        // 5. Create booking
-        const response = await Booking.create(data);
-
-        return response;
+        return booking;
 
     } catch (error) {
         if (error.name === 'ValidationError') {
@@ -40,7 +52,7 @@ const createBooking = async (data) => {
             Object.keys(error.errors).forEach(key => {
                 err[key] = error.errors[key].message;
             });
-            throw { err: err, code: STATUS.UNPROCESSABLE_ENTITY };
+            throw { err, code: STATUS.UNPROCESSABLE_ENTITY };
         }
         throw error;
     }

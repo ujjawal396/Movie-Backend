@@ -1,6 +1,6 @@
 const { STATUS, USER_ROLE, BOOKING_STATUS } = require('../utils/constants');
 const { errorResponseBody } = require('../utils/responsebody');
-const mongoose= require('mongoose');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 
 const theatreService = require('../services/theatre.service');
