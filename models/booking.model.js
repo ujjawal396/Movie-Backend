@@ -29,7 +29,14 @@ showId: {
             message: "Invalid booking status"
         },
         default: BOOKING_STATUS.processing
-    }
+    },
+    
+      idempotencyKey: {
+       type: String,
+       unique: true,
+        sparse: true
+      },
+
 }, { timestamps: true });
 
 

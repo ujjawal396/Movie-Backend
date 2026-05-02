@@ -4,11 +4,15 @@ const { STATUS } = require('../utils/constants');
 
 const create = async (req, res) => {
     try {
-        const response = await bookingService.createBooking({
-            showId: req.body.showId,
-            noOfSeats: req.body.noOfSeats,
-            userId: req.user
+        const userId = req.user;
+        const idempotencyKey = req.headers['idempotency-key'];
+
+         const response = await bookingService.createBooking({
+      ...req.body,
+      userId,
+      idempotencyKey
         });
+
 
         successResponseBody.message = "Successfully created a booking";
         successResponseBody.data = response;

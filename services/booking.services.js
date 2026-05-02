@@ -4,12 +4,20 @@ const Show = require('../models/show.model');
 
 const createBooking = async (data) => {
     try {
-        const seats = data.noOfSeats;
+        const { showId, noOfSeats, userId, idempotencyKey } = data;
 
-        // 🔥 Atomic check + update
+        // 🔁 Step 1: Fast check (if already processed)
+        if (idempotencyKey) {
+            const existing = await Booking.findOne({ idempotencyKey, userId });
+            if (existing) return existing;
+        }
+
+        const seats = noOfSeats;
+
+        // 🔥 Step 2: Atomic seat update
         const show = await Show.findOneAndUpdate(
             {
-                _id: data.showId,
+                _id: showId,
                 $expr: {
                     $lte: [
                         { $add: ["$bookedSeats", seats] },
@@ -20,12 +28,9 @@ const createBooking = async (data) => {
             {
                 $inc: { bookedSeats: seats }
             },
-            {
-                new: true
-            }
+            { new: true }
         );
 
-        // ❗ If null → no seats available
         if (!show) {
             throw {
                 err: "Not enough seats available",
@@ -33,18 +38,38 @@ const createBooking = async (data) => {
             };
         }
 
-        // 💰 Calculate total cost
-        data.totalCost = seats * show.price;
+        const totalCost = seats * show.price;
 
-        // 🧾 Create booking
-        const booking = await Booking.create({
-            showId: data.showId,
-            userId: data.userId,
-            noOfSeats: seats,
-            totalCost: data.totalCost
-        });
+        try {
+            // 🧾 Step 3: Try creating booking
+            const booking = await Booking.create({
+                showId,
+                userId,
+                noOfSeats: seats,
+                totalCost,
+                idempotencyKey
+            });
 
-        return booking;
+            return booking;
+
+        } catch (err) {
+
+            // 🔥 Step 4: Handle duplicate key (race condition)
+            if (err.code === 11000 && idempotencyKey) {
+
+                // rollback seat increment
+                await Show.updateOne(
+                    { _id: showId },
+                    { $inc: { bookedSeats: -seats } }
+                );
+
+                // fetch existing booking
+                const existing = await Booking.findOne({ idempotencyKey, userId });
+                if (existing) return existing;
+            }
+
+            throw err;
+        }
 
     } catch (error) {
         if (error.name === 'ValidationError') {
@@ -57,6 +82,7 @@ const createBooking = async (data) => {
         throw error;
     }
 };
+
 const updateBooking = async (data, bookingId) => {
     try {
         const response = await Booking.findByIdAndUpdate(bookingId, data, {
